@@ -3,9 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import sizeOf from 'image-size';
 import app from '../index';
+import { resizeImage } from '../utilities/imageUtilities';
 
 describe('GET /api/imageResize', () => {
-  console.log(11111111111);
   it('responds with 400 if called without any of the following parameter (filename, width, height)', (done): void => {
     request(app).get('/api/imageResize').expect(400, done());
   });
@@ -49,5 +49,33 @@ describe('GET /api/imageResize', () => {
         expect(dimensions.width).toEqual(400);
         done();
       });
+  });
+});
+
+describe('The resizeImage function', (): void => {
+  const fullImagePath = path.resolve(__dirname, '../images/fjord.jpg');
+  const resizedImagePath = path.resolve(
+    __dirname,
+    '../resized-images/fjord-100x100.jpg'
+  );
+  it('expect the function to be resolved when enter the right parameter and create the image', async (): Promise<void> => {
+    await expectAsync(
+      resizeImage({
+        fullImagePath,
+        resizedImagePath,
+        width: 100,
+        height: 100
+      })
+    ).toBeResolved();
+  });
+  it('expect the function to be rejected when enter the wrong parameter', async (): Promise<void> => {
+    await expectAsync(
+      resizeImage({
+        fullImagePath: '',
+        resizedImagePath,
+        width: 100,
+        height: 100
+      })
+    ).toBeRejected();
   });
 });

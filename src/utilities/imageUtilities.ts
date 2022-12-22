@@ -30,8 +30,8 @@ export const isHeightWidthValid = (
 ): void => {
   const { height, width } = req.query;
   if (!height && !width) return next();
-  const heightAsNum = parseInt(height as string);
-  const widthAsNum = parseInt(width as string);
+  const heightAsNum = Number(height as string);
+  const widthAsNum = Number(width as string);
   if (heightAsNum && heightAsNum > 0 && widthAsNum && widthAsNum > 0) {
     return next();
   } else if (heightAsNum && heightAsNum > 0 && !width) {
@@ -59,4 +59,5 @@ export const resizeImage = async ({
   height
 }: ResizeImageProps): Promise<void> => {
   await sharp(fullImagePath).resize(width, height).toFile(resizedImagePath);
+  // if (!resizedImage) return Promise.reject();
 };
